@@ -293,7 +293,7 @@ df.loc[mask, 'Discount Applied'] = \
 import pandas as pd
 
 # Load data
-df = pd.read_csv("Deliverable1Dataset.csv")
+df = pd.read_csv("datasource/Deliverable1Dataset.csv")
 
 # Convert numeric columns
 for col in ["Price Per Unit", "Quantity", "Total Spent"]:
