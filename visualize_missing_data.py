@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Load original and cleaned datasets
-df_original = pd.read_csv("Deliverable1Dataset.csv")
+df_original = pd.read_csv("datasource/Deliverable1Dataset.csv")
 df_cleaned = pd.read_csv("Deliverable1Dataset_CLEANED.csv")
 
 # Convert numeric columns
