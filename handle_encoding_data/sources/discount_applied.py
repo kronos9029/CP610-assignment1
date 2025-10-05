@@ -4,7 +4,7 @@ from pathlib import Path
 
 # Configuration
 CSV_IN = "../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv"
-CSV_OUT = "../../output_data/4_discount_applied/discount_applied_one_hot_encoded.csv"
+CSV_OUT = "../output_data/4_discount_applied/discount_applied_one_hot_encoded.csv"
 DISCOUNT_APPLIED = "Discount Applied"
 ENCODING_PREFIX = "Discount"
 
