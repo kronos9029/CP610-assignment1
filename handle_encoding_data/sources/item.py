@@ -7,8 +7,8 @@ from sklearn.model_selection import KFold
 
 
 # Configuration
-CSV_IN = Path("../../output_data/1_customer_id/encoded_customer_id_dataset.csv")
-CSV_OUT = Path("../../output_data/6_item/encoded_item_dataset.csv")
+CSV_IN = Path("../output_data/1_customer_id/encoded_customer_id_dataset.csv")
+CSV_OUT = Path("../output_data/6_item/encoded_item_dataset.csv")
 
 # Column names
 ITEM = "Item"

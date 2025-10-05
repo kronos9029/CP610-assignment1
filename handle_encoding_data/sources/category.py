@@ -5,8 +5,8 @@ from pathlib import Path
 
 
 # Configuration
-CSV_IN = Path("../../output_data/6_item/encoded_item_dataset.csv")
-CSV_OUT = Path("../../output_data/5_category/encoded_category_dataset.csv")
+CSV_IN = Path("../output_data/6_item/encoded_item_dataset.csv")
+CSV_OUT = Path("../output_data/5_category/encoded_category_dataset.csv")
 CATEGORY = "Category"
 PREFIX = "cat"  # use 'cat_' prefix to make columns self-explanatory
 

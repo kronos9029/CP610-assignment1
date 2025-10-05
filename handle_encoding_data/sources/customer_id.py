@@ -6,8 +6,8 @@ from pathlib import Path
 
 
 # Configuration
-CSV_IN = Path("../output_data/4_discount_applied/final_cleaned_dataset.csv")
-CSV_OUT = Path("../../output_data/1_customer_id/encoded_customer_id_dataset.csv")
+CSV_IN = Path("../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv")
+CSV_OUT = Path("../output_data/1_customer_id/encoded_customer_id_dataset.csv")
 CUSTOMER_ID = "Customer ID"
 TARGET_COL = "Total Spent"
 ENCODED_COL = "Customer ID Target Encoded"
