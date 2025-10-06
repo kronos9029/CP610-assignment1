@@ -40,6 +40,7 @@ This document analyzes the three rescaling methods (Normalization, Standardizati
 1. **Quantity** - Number of items purchased per transaction
 2. **Price Per Unit** - Price per individual item
 3. **Total Spent** - Total transaction amount (Quantity × Price Per Unit)
+4. **Transaction Date** - Date of transaction (requires conversion to numeric format)
 
 ### Dataset Properties
 
@@ -301,6 +302,90 @@ Where IQR = Q3 - Q1 (Interquartile Range)
 
 ## Attribute-by-Attribute Analysis
 
+### 0. Transaction Date
+
+**Data Characteristics:**
+- **Original Format:** String (YYYY-MM-DD format, e.g., "2024-10-08")
+- **Range:** Multiple years (2022-2024 based on sample data)
+- **Distribution:** Temporal data, typically uniform or seasonally patterned
+- **Nature:** Categorical datetime that must be converted to numeric
+
+**Conversion Strategy:**
+
+**Option 1: Unix Timestamp (Recommended)**
+- Convert to seconds/milliseconds since epoch (1970-01-01)
+- Formula: `pd.to_datetime(df['Transaction Date']).astype(np.int64) // 10^9` (seconds)
+- **Pros:** Simple single column; preserves chronological ordering; universally interpretable
+- **Cons:** Large magnitude values (e.g., 1.7×10^9)
+
+**Option 2: Ordinal Days**
+- Days since a reference date (e.g., epoch or dataset minimum)
+- Formula: `pd.to_datetime(df['Transaction Date']).map(pd.Timestamp.toordinal)`
+- **Pros:** Smaller values than Unix timestamp; intuitive (days count)
+- **Cons:** Still large magnitude (e.g., 700,000+ for 2022)
+
+**Option 3: Feature Engineering (Not Recommended for Initial Rescaling)**
+- Extract: Year, Month, Day, DayOfWeek, Quarter, IsWeekend
+- **Pros:** Rich temporal features; captures seasonality
+- **Cons:** Creates multiple columns; changes data structure; more suitable for modeling phase
+
+**Selected Conversion Method:** 🏆 **Unix Timestamp (Seconds)**
+
+**Rationale:**
+1. ✅ Single numeric column (maintains dataset structure)
+2. ✅ Preserves exact chronological ordering
+3. ✅ Compatible with all scaling methods
+4. ✅ Standard approach in ML pipelines
+5. ✅ Reversible (can convert back to date if needed)
+
+**After Conversion - Rescaling Method:**
+
+**Data Characteristics (Post-Conversion):**
+- **Range:** ~1.64×10^9 to ~1.73×10^9 (seconds since 1970-01-01)
+- **Distribution:** Linear progression (uniform or patterned over time)
+- **Outliers:** None (dates are continuous)
+- **Nature:** Large magnitude values with bounded range
+
+**Method Comparison:**
+
+| Method | Pros for Transaction Date | Cons for Transaction Date | Suitability |
+|--------|--------------------------|---------------------------|-------------|
+| **Normalization** | Bounded [0,1]; interpretable (0=earliest, 1=latest) | - | ✅ **BEST** |
+| **Standardization** | Preserves temporal variance | Large magnitude makes mean/std less interpretable | ⚠️ Moderate |
+| **Robust Scaling** | N/A (no outliers in dates) | Unnecessary complexity | ❌ Poor |
+
+**Recommendation:** 🏆 **Min-Max Normalization**
+
+**Rationale:**
+1. Dates have clear bounds (min = earliest transaction, max = latest transaction)
+2. No outliers in temporal data (all dates are valid)
+3. Normalized scale [0, 1] highly interpretable:
+   - 0 = earliest transaction in dataset
+   - 1 = most recent transaction
+   - 0.5 = midpoint of data collection period
+4. Bounded range suitable for ML algorithms
+5. Preserves temporal ordering and relative distances
+
+**Implementation Order:** 0th (convert first, then rescale; independent of other variables)
+
+**Conversion + Rescaling Pipeline:**
+```python
+# Step 1: Convert to Unix timestamp (seconds)
+df['Transaction Date Numeric'] = pd.to_datetime(df['Transaction Date']).astype(np.int64) // 10**9
+
+# Step 2: Min-Max Normalization
+min_date = df['Transaction Date Numeric'].min()
+max_date = df['Transaction Date Numeric'].max()
+df['Transaction Date Scaled'] = (df['Transaction Date Numeric'] - min_date) / (max_date - min_date)
+```
+
+**Expected Output:**
+- Original column: `Transaction Date` (string, e.g., "2024-10-08")
+- Numeric column: `Transaction Date Numeric` (int, e.g., 1728345600)
+- Scaled column: `Transaction Date Scaled` (float [0, 1], e.g., 0.842)
+
+---
+
 ### 1. Quantity
 
 **Data Characteristics:**
@@ -407,6 +492,8 @@ Where IQR = Q3 - Q1 (Interquartile Range)
 ### Sequential Pipeline:
 
 ```
+0. Transaction Date (Conversion + Min-Max Normalization)
+   ↓
 1. Quantity (Robust Scaling)
    ↓
 2. Price Per Unit (Min-Max Normalization)
@@ -418,12 +505,18 @@ Where IQR = Q3 - Q1 (Interquartile Range)
 
 **Rationale for Order:**
 
-1. **Quantity First**
+0. **Transaction Date First**
+   - Requires conversion from string to numeric (preprocessing step)
+   - Independent variable (no dependencies on other attributes)
+   - Min-Max normalization provides interpretable temporal scale [0, 1]
+   - No impact on other variables (can be done independently)
+
+1. **Quantity Second**
    - Independent variable
    - No dependencies on other attributes
    - Outlier handling strategy informs later decisions
 
-2. **Price Per Unit Second**
+2. **Price Per Unit Third**
    - Partially independent (per-item pricing)
    - Can validate against Total Spent after scaling
    - Normalization preserves price interpretability
@@ -484,6 +577,7 @@ Where IQR = Q3 - Q1 (Interquartile Range)
 
 | Attribute | Distribution | Outliers | Natural Bounds | Selected Method | Justification |
 |-----------|-------------|----------|----------------|-----------------|---------------|
+| **Transaction Date** | Linear/Uniform | No | Bounded (min/max date) | **Min-Max Normalization** | Temporal data with clear bounds; no outliers |
 | **Quantity** | Right-skewed | Yes (valid) | Lower bound (0) | **Robust Scaling** | Preserves outliers; handles skew |
 | **Price Per Unit** | Mixed | Handled | Lower bound (>0) | **Min-Max Normalization** | Interpretable; bounded; outliers managed |
 | **Total Spent** | Right-skewed | Yes (valid) | Lower bound (>0) | **Robust Scaling** | Robust to outliers; preserves information |
@@ -498,6 +592,11 @@ Where IQR = Q3 - Q1 (Interquartile Range)
 - `handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv`
 
 **Scripts and Outputs:**
+
+0. **Transaction Date:**
+   - Script: `transaction_date_rescaling_normalization.py`
+   - Output: `data_rescaling_norm_transaction_date.csv`
+   - Note: Includes conversion step (string → Unix timestamp) before normalization
 
 1. **Quantity:**
    - Script: `quantity_rescaling_robust.py`
@@ -590,6 +689,12 @@ After implementing each rescaling method:
 
 **Recommended Strategy:**
 
+0. **Transaction Date → Conversion + Min-Max Normalization**
+   - Convert string dates to Unix timestamp (seconds)
+   - Normalize to [0, 1] range for interpretability
+   - 0 = earliest transaction, 1 = latest transaction
+   - Independent preprocessing step
+
 1. **Quantity → Robust Scaling**
    - Handles outliers (bulk purchases)
    - Suitable for right-skewed count data
@@ -610,7 +715,7 @@ After implementing each rescaling method:
 - One-size-fits-all approach ignores data properties
 - Optimal scaling should match data distribution and intended use
 
-**Implementation Order:** Quantity → Price Per Unit → Total Spent
+**Implementation Order:** Transaction Date → Quantity → Price Per Unit → Total Spent
 - Respects dependencies
 - Allows validation at each step
 - Maintains mathematical relationships
@@ -637,16 +742,17 @@ After implementing each rescaling method:
 │  Categorical      │     │  Numerical           │
 │  Encoding         │     │  Rescaling           │
 │                   │     │                      │
-│  → Customer ID    │     │  → Quantity          │
-│  → Location       │     │  → Price Per Unit    │
-│  → Payment        │     │  → Total Spent       │
-│  → Discount       │     │                      │
-│  → Category       │     │  Methods:            │
-│  → Item           │     │  - Normalization     │
-│                   │     │  - Standardization   │
-│  Output:          │     │  - Robust Scaling    │
-│  Encoded datasets │     │                      │
-└───────────────────┘     │  Output:             │
+│  → Customer ID    │     │  → Transaction Date  │
+│  → Location       │     │     (Convert + Norm) │
+│  → Payment        │     │  → Quantity          │
+│  → Discount       │     │  → Price Per Unit    │
+│  → Category       │     │  → Total Spent       │
+│  → Item           │     │                      │
+│                   │     │  Methods:            │
+│  Output:          │     │  - Normalization     │
+│  Encoded datasets │     │  - Robust Scaling    │
+└───────────────────┘     │                      │
+                          │  Output:             │
                           │  Rescaled datasets   │
                           └──────────────────────┘
 
@@ -657,7 +763,8 @@ Question 1 and Question 2c are INDEPENDENT tasks.
 **Key Point:**
 - **Question 1 (Encoding)** does NOT feed into **Question 2c (Rescaling)**
 - Both use `final_cleaned_dataset.csv` as their starting point
-- Rescaling operates only on numerical columns (Quantity, Price Per Unit, Total Spent)
+- Rescaling operates only on numerical columns (Transaction Date, Quantity, Price Per Unit, Total Spent)
+  - Note: Transaction Date requires conversion from string to numeric before scaling
 - Encoding operates only on categorical columns (Customer ID, Location, Payment, etc.)
 
 ---
