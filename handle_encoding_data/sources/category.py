@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Configuration - use paths relative to this script's location
 SCRIPT_DIR = Path(__file__).parent
-CSV_IN = SCRIPT_DIR / "../output_data/6_item/encoded_item_dataset.csv"
+CSV_IN = SCRIPT_DIR / "../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv"
 CSV_OUT = SCRIPT_DIR / "../output_data/5_category/encoded_category_dataset.csv"
 CATEGORY = "Category"
 PREFIX = "cat"  # use 'cat_' prefix to make columns self-explanatory
