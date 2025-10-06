@@ -22,7 +22,7 @@ fig.suptitle('Missing Data Analysis - Before & After', fontsize=16, fontweight='
 # ============================================================================
 # Plot 1: Overall Missing Percentages
 # ============================================================================
-ax1 = axes[0, 0]
+ax1 = axes[1, 0]
 
 columns_with_missing = ["Item", "Price Per Unit", "Quantity", "Total Spent", "Discount Applied"]
 missing_before = [(df_original[col].isna().sum() / len(df_original) * 100) for col in columns_with_missing]
@@ -82,7 +82,7 @@ for i, bar in enumerate(bars):
 # ============================================================================
 # Plot 3: Data Retention
 # ============================================================================
-ax3 = axes[1, 0]
+ax3 = axes[0, 0]
 
 retention_data = [
     len(df_original),

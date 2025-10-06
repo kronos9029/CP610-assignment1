@@ -212,7 +212,7 @@ discount_encoded = pd.get_dummies(df['Discount Applied'], prefix='Discount', dro
 **Encoding Method:** One-Hot Encoding
 
 **Why Handle Fifth:**
-1. **Moderate cardinality:** 10 categories is manageable for one-hot
+1. **Moderate cardinality:** 8 categories is manageable for one-hot
 2. **Core feature:** Product category is critical for analysis but doesn't need early encoding
 3. **No dependencies:** Can be encoded independently after simpler features
 4. **Standard approach:** Industry norm for product categories
@@ -229,17 +229,17 @@ discount_encoded = pd.get_dummies(df['Discount Applied'], prefix='Discount', dro
 **Technical Implementation:**
 ```python
 category_encoded = pd.get_dummies(df['Category'], prefix='Category', drop_first=False)
-# Creates 10 columns: Category_Beverages, Category_Food, Category_Furniture, etc.
+# Creates 8 columns: Category_Beverages, Category_Food, Category_Furniture, etc.
 ```
 
 **Why This Works:**
 - Each category becomes independent binary feature
 - No false relationships between unrelated categories
 - Interpretable: Category_Food=1 means "this is a food transaction"
-- 10 columns is acceptable dimensionality
+- 8 columns is acceptable dimensionality
 
 **Expected Output:**
-- 10 new columns (one per category)
+- 8 new columns (one per category)
 - Categories include: Beverages, Butchers, Computers and electric accessories, Electric household essentials, Food, Furniture, Milk Products, Patisserie
 
 **File Output:** `output_data/5_encoding/category_one_hot_encoded.csv`
