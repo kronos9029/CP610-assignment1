@@ -6,9 +6,10 @@ from pathlib import Path
 from sklearn.model_selection import KFold
 
 
-# Configuration
-CSV_IN = Path("../output_data/1_customer_id/encoded_customer_id_dataset.csv")
-CSV_OUT = Path("../output_data/6_item/encoded_item_dataset.csv")
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+CSV_IN = SCRIPT_DIR / "../output_data/1_customer_id/encoded_customer_id_dataset.csv"
+CSV_OUT = SCRIPT_DIR / "../output_data/6_item/encoded_item_dataset.csv"
 
 # Column names
 ITEM = "Item"

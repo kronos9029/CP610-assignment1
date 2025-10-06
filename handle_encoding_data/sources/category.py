@@ -4,9 +4,10 @@ import seaborn as sns
 from pathlib import Path
 
 
-# Configuration
-CSV_IN = Path("../output_data/6_item/encoded_item_dataset.csv")
-CSV_OUT = Path("../output_data/5_category/encoded_category_dataset.csv")
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+CSV_IN = SCRIPT_DIR / "../output_data/6_item/encoded_item_dataset.csv"
+CSV_OUT = SCRIPT_DIR / "../output_data/5_category/encoded_category_dataset.csv"
 CATEGORY = "Category"
 PREFIX = "cat"  # use 'cat_' prefix to make columns self-explanatory
 

@@ -2,9 +2,10 @@ import pandas as pd
 from pathlib import Path
 
 
-# Configuration
-CSV_IN = "../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv"
-CSV_OUT = "../output_data/4_discount_applied/discount_applied_one_hot_encoded.csv"
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+CSV_IN = SCRIPT_DIR / "../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv"
+CSV_OUT = SCRIPT_DIR / "../output_data/4_discount_applied/discount_applied_one_hot_encoded.csv"
 DISCOUNT_APPLIED = "Discount Applied"
 ENCODING_PREFIX = "Discount"
 

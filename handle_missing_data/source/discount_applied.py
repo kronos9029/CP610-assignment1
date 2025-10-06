@@ -3,9 +3,10 @@ import numpy as np
 from pathlib import Path
 
 
-# Configuration
-INPUT_CSV = '../output_data/3_item/item_imputed.csv'
-OUTPUT_CSV = '../output_data/4_discount_applied/final_cleaned_dataset.csv'
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+INPUT_CSV = SCRIPT_DIR / '../output_data/3_item/item_imputed.csv'
+OUTPUT_CSV = SCRIPT_DIR / '../output_data/4_discount_applied/final_cleaned_dataset.csv'
 DISCOUNT_APPLIED_COLUMN = 'Discount Applied'
 
 

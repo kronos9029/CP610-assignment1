@@ -3,9 +3,10 @@ import os
 from pathlib import Path
 
 
-# Configuration
-INPUT_CSV_PATH = Path('../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv')
-OUTPUT_CSV_PATH = Path('../output_data/3_payment_method/encoded_payment_method_dataset.csv')
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+INPUT_CSV_PATH = SCRIPT_DIR / '../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv'
+OUTPUT_CSV_PATH = SCRIPT_DIR / '../output_data/3_payment_method/encoded_payment_method_dataset.csv'
 PAYMENT_METHOD_COLUMN = 'Payment Method'
 ENCODING_PREFIX = 'Payment'
 

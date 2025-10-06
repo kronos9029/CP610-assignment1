@@ -5,9 +5,10 @@ from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 
 
-# Configuration
-INPUT_CSV = Path('../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv')
-OUTPUT_DIR = Path('../output_data/quantity')
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+INPUT_CSV = SCRIPT_DIR / '../../handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv'
+OUTPUT_DIR = SCRIPT_DIR / '../output_data/quantity'
 QUANTITY_COLUMN = 'Quantity'
 
 
