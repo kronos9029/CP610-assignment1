@@ -9,7 +9,7 @@ import numpy as np
 
 # Load original and cleaned datasets
 df_original = pd.read_csv("datasource/Deliverable1Dataset.csv")
-df_cleaned = pd.read_csv("Deliverable1Dataset_CLEANED.csv")
+df_cleaned = pd.read_csv("handle_missing_data/output_data/4_discount_applied/final_cleaned_dataset.csv")
 
 # Convert numeric columns
 for col in ["Price Per Unit", "Quantity", "Total Spent"]:
