@@ -2,9 +2,10 @@ import pandas as pd
 from pathlib import Path
 
 
-# Configuration
-INPUT_CSV = '../../datasource/Deliverable1Dataset.csv'
-OUTPUT_CSV = '../output_data/1_total_spent/total_spent_cleaned.csv'
+# Configuration - use paths relative to this script's location
+SCRIPT_DIR = Path(__file__).parent
+INPUT_CSV = SCRIPT_DIR / '../../datasource/Deliverable1Dataset.csv'
+OUTPUT_CSV = SCRIPT_DIR / '../output_data/1_total_spent/total_spent_cleaned.csv'
 
 # Column names
 TOTAL_SPENT = 'Total Spent'
